@@ -9,23 +9,25 @@ inputs:
   issue_number:
     description: GitHub Issue number to notify the result
     required: true
+  state:
+    description: state
+    required: true
+
 runs:
   using: composite
   steps:
     - run: |
-        state=$(gh issue view "$ISSUE_NUMBER" --json state -q .state)
-        if [ "$state" = "CLOSED" ]; then
-          gh -R "$GITHUB_REPOSITORY" issue reopen "$ISSUE_NUMBER" -c "CI failed. $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
-        fi
+        gh -R "$GITHUB_REPOSITORY" issue reopen "$ISSUE_NUMBER" -c "CI failed. $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
       shell: bash
-      if: failure()
+      if: inputs.state == 'failure'
       env:
         ISSUE_NUMBER: ${{inputs.issue_number}}
         GITHUB_TOKEN: ${{github.token}}
     - run: |
         gh -R "$GITHUB_REPOSITORY" issue close "$ISSUE_NUMBER"
       shell: bash
-      if: success()
+      if: inputs.state == 'success'
       env:
         ISSUE_NUMBER: ${{inputs.issue_number}}
+        STATE: ${{inputs.state}}
         GITHUB_TOKEN: ${{github.token}}
