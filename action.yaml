@@ -1,0 +1,32 @@
+name: Notify workflow failure
+author: Shunsuke Suzuki
+# branding:
+#   icon: check
+#   color: yellow
+description: |
+  Notify the failure of GitHub Actions Workflow to a GitHub Issue.
+inputs:
+  issue_number:
+    description: GitHub Issue number to notify the result
+    required: true
+  status:
+    description: state
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - run: |
+        gh -R "$GITHUB_REPOSITORY" issue reopen "$ISSUE_NUMBER" -c "CI failed. $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+      shell: bash
+      if: inputs.status == 'failure'
+      env:
+        ISSUE_NUMBER: ${{inputs.issue_number}}
+        GITHUB_TOKEN: ${{github.token}}
+    - run: |
+        gh -R "$GITHUB_REPOSITORY" issue close "$ISSUE_NUMBER"
+      shell: bash
+      if: inputs.status == 'success'
+      env:
+        ISSUE_NUMBER: ${{inputs.issue_number}}
+        GITHUB_TOKEN: ${{github.token}}
