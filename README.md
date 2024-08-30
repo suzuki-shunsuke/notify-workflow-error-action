@@ -18,7 +18,7 @@ This action posts a comment to an issue, then you can receive the notification q
 ## Example
 
 ```yaml
-- uses: suzuki-shunsuke/notify-workflow-error-action@main
+- uses: suzuki-shunsuke/notify-workflow-error-action@e5e8817e62eb122231d162dbc8309c4d05a21b2e # v0.1.0
   if: always()
   with:
     issue_number: "225"
