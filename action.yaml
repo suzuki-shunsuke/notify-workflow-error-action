@@ -25,6 +25,7 @@ runs:
     - run: |
         gh -R "$GITHUB_REPOSITORY" issue close "$ISSUE_NUMBER"
       shell: bash
+      if: success()
       env:
         ISSUE_NUMBER: ${{inputs.issue_number}}
         GITHUB_TOKEN: ${{github.token}}
