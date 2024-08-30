@@ -25,11 +25,20 @@ This action posts a comment to an issue, then you can receive the notification q
     status: ${{ job.status }}
 ```
 
+## Permision of GitHub Actions token 
+
+This action uses `${{ github.token }}` to update the issue. So the permission `issues:write` is required.
+
+```yaml
+permissions:
+  issues: write
+```
+
 ## Inputs
 
 ### Required Inputs
 
-- `issue_number`: GitHub Issue Number
+- `issue_number`: GitHub Issue Number. You need to create an issue in advance
 - `status`: The status of the current job or workflow
   - If the value is `success`, the action closes the issue
   - If the value is `failure`, the action re-open the issue
