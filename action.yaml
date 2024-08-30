@@ -15,7 +15,7 @@ runs:
     - run: |
         state=$(gh issue view "$ISSUE_NUMBER" --json state -q .state)
         if [ "$state" = "CLOSED" ]; then
-          gh issue reopen "$ISSUE_NUMBER" -c "CI failed. $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          gh -R "$GITHUB_REPOSITORY" issue reopen "$ISSUE_NUMBER" -c "CI failed. $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
         fi
       shell: bash
       if: failure()
@@ -23,7 +23,7 @@ runs:
         ISSUE_NUMBER: ${{inputs.issue_number}}
         GITHUB_TOKEN: ${{github.token}}
     - run: |
-        gh issue close "$ISSUE_NUMBER"
+        gh -R "$GITHUB_REPOSITORY" issue close "$ISSUE_NUMBER"
       shell: bash
       env:
         ISSUE_NUMBER: ${{inputs.issue_number}}
